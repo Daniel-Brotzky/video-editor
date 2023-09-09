@@ -1,6 +1,6 @@
 import './App.css';
-import Timeline from './Components/Timeline';
-import VideoUploader from './Components/videoUploader';
+import Timeline from './components/timeline/Timeline';
+import VideoUploader from './components/videoUploader';
 
 function App() {
   return (
