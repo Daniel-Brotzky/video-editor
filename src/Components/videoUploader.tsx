@@ -1,8 +1,11 @@
 import { ChangeEvent, useRef } from "react";
+import { useDispatch } from "react-redux";
+import { setLength } from "../state/VideoReducer";
 
 const VideoUploader = () => {
     const videoElement = useRef<HTMLVideoElement>(null);
     const videoSource = useRef<HTMLSourceElement>(null);
+    const dispatch = useDispatch();
 
     function handleUploadVideo(event: ChangeEvent<HTMLInputElement>) {
         if (event.target.files && event.target.files[0]) {
@@ -16,7 +19,7 @@ const VideoUploader = () => {
                     videoElement.current?.load();
 
                     videoElement.current.onloadedmetadata = () => {
-                        console.log(videoElement.current?.duration);
+                        dispatch(setLength(videoElement.current?.duration));
                     }
                 }
             }
