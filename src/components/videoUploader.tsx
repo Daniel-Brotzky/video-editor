@@ -1,6 +1,6 @@
-import { ChangeEvent, useEffect, useRef } from "react";
+import { ChangeEvent, useCallback, useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { setLength, setLocation } from "../state/VideoReducer";
+import { setLength, setLocation, setPlaying } from "../state/VideoReducer";
 import { RootState } from "../state/store";
 import VideoControls from "./VideoControls";
 import "./Video.css"
@@ -10,14 +10,29 @@ const VideoUploader = () => {
     const videoSource = useRef<HTMLSourceElement>(null);
     const currentLocation = useSelector((state: RootState) => state.video.currentLocation);
     const isDragging = useSelector((state: RootState) => state.video.isDragging);
-
+    const isPlaying = useSelector((state: RootState) => state.video.isPlaying);
     const dispatch = useDispatch();
 
-    function onTimeupdate(event: Event) {
+    useEffect(() => {
+        // video.play() is async
+        if (isPlaying && videoElement.current) {
+            videoElement.current.play();
+        }
+    }, [isPlaying, videoElement])
+
+    if (!isPlaying && videoElement.current) {
+        videoElement.current.pause();
+    }
+
+    const onTimeUpdate = useCallback(() => {
         if (videoElement.current) {
             dispatch(setLocation(videoElement.current.currentTime / videoElement.current.duration));
-        }
-    }
+        }  
+    }, [dispatch, videoElement])
+
+    const onVideoEnd = useCallback(() => {
+        dispatch(setPlaying(false));
+    }, [dispatch]);
 
     function handleUploadVideo(event: ChangeEvent<HTMLInputElement>) {
         if (event.target.files && event.target.files[0]) {
@@ -34,7 +49,8 @@ const VideoUploader = () => {
                         dispatch(setLength(videoElement.current?.duration));
                     }
 
-                    videoElement.current.addEventListener('timeupdate', onTimeupdate)
+                    videoElement.current.addEventListener('timeupdate', onTimeUpdate);
+                    videoElement.current.addEventListener('ended', onVideoEnd);
                 }
             }
           }
@@ -55,7 +71,7 @@ const VideoUploader = () => {
             <input type="file" accept="video/*" onChange={handleUploadVideo}/>
             <hr />
             <div className="video-container">
-                <video controls ref={videoElement} className="video">
+                <video ref={videoElement} className="video">
                     <source ref={videoSource} />
                     Your browser does not support the video tag.
                 </video>

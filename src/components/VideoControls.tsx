@@ -7,7 +7,7 @@ const VideoControls = () => {
     const dispatch = useDispatch();
 
     return (
-        <div className={`video-controls ${isPlaying ? '' : 'show-controls'}`}>
+        <div className={`video-controls-container ${isPlaying ? '' : 'show-controls'}`}>
             <div className={`progress-button ${isPlaying ? 'pause-button' : 'play-button'}`}
             onClick={() => dispatch(setPlaying(!isPlaying))}
             />
