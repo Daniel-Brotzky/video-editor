@@ -75,10 +75,6 @@
 
 .timeline-picker {
     position: absolute;
-    top: 0;
-    width: 0;
-    border-left: 8px solid blue;
-    /* transform: translateX(-50%); */
     height: 100%;
 
     &:before {
@@ -87,7 +83,18 @@
         border-width: 17px;
         border-color: blue transparent transparent transparent;
         border-style: solid;
-        right: -13px;
+        transform: translateX(-50%);
         top: -12px;
+    }
+
+    &:after {
+        position: absolute;
+        content:'';
+
+        top: 0;
+        width: 0;
+        border-left: 8px solid blue;
+        transform: translateX(-50%);
+        height: 100%;
     }
 }
