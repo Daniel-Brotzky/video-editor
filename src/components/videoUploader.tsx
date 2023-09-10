@@ -2,6 +2,8 @@ import { ChangeEvent, useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setLength, setLocation } from "../state/VideoReducer";
 import { RootState } from "../state/store";
+import VideoControls from "./VideoControls";
+import "./Video.css"
 
 const VideoUploader = () => {
     const videoElement = useRef<HTMLVideoElement>(null);
@@ -52,10 +54,13 @@ const VideoUploader = () => {
         <div>
             <input type="file" accept="video/*" onChange={handleUploadVideo}/>
             <hr />
-            <video controls ref={videoElement} height="400px">
-                <source ref={videoSource} />
-                Your browser does not support the video tag.
-            </video>
+            <div className="video-container">
+                <video controls ref={videoElement} className="video">
+                    <source ref={videoSource} />
+                    Your browser does not support the video tag.
+                </video>
+                <VideoControls />
+            </div>
         </div>
     )
 }

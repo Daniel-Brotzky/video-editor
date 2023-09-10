@@ -24,5 +24,5 @@ export const videoSlice = createSlice({
     }
 }) 
 
-export const { setLength, setLocation, setDragging } = videoSlice.actions;
+export const { setLength, setLocation, setDragging, setPlaying } = videoSlice.actions;
 export default videoSlice.reducer;
