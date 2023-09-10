@@ -1,10 +1,15 @@
-.timeline-ruler {
+.timeline-container {
     position: absolute;
+    width: calc(100%* (2/3));
+    height: 50px;
     left: 50%;
     transform: translateX(-50%);
-    height: 50px;
-    width: calc(100%* (2/3));
     margin-top: 10px;
+}
+
+.timeline-ruler {
+    height: 100%;
+    width: 100%;
     background-color: #F6C199;
 }
 
@@ -59,4 +64,30 @@
     color: #A79E9F;
     font-weight: bold;
     font-size: 1.2em;
+}
+
+.timeline-picker-wrapper {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    top: 0;
+}
+
+.timeline-picker {
+    position: absolute;
+    top: 0;
+    width: 0;
+    border-left: 8px solid blue;
+    /* transform: translateX(-50%); */
+    height: 100%;
+
+    &:before {
+        position: absolute;
+        content: '';
+        border-width: 17px;
+        border-color: blue transparent transparent transparent;
+        border-style: solid;
+        right: -13px;
+        top: -12px;
+    }
 }

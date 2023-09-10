@@ -1,10 +1,12 @@
 import TimelineRuler from "./TimelineRuler";
 import './Timeline.css';
+import TimelinePicker from "./TimelinePicker";
 
 const Timeline = () => {
     return (
-        <div>
+        <div className="timeline-container">
             <TimelineRuler />
+            <TimelinePicker />
         </div>
     )
 }

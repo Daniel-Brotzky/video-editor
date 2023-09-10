@@ -1,11 +1,21 @@
-import { ChangeEvent, useRef } from "react";
-import { useDispatch } from "react-redux";
-import { setLength } from "../state/VideoReducer";
+import { ChangeEvent, useEffect, useRef } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { setLength, setLocation } from "../state/VideoReducer";
+import { RootState } from "../state/store";
 
 const VideoUploader = () => {
     const videoElement = useRef<HTMLVideoElement>(null);
     const videoSource = useRef<HTMLSourceElement>(null);
+    const currentLocation = useSelector((state: RootState) => state.video.currentLocation);
+    const isDragging = useSelector((state: RootState) => state.video.isDragging);
+
     const dispatch = useDispatch();
+
+    function onTimeupdate(event: Event) {
+        if (videoElement.current) {
+            dispatch(setLocation(videoElement.current.currentTime / videoElement.current.duration));
+        }
+    }
 
     function handleUploadVideo(event: ChangeEvent<HTMLInputElement>) {
         if (event.target.files && event.target.files[0]) {
@@ -21,13 +31,21 @@ const VideoUploader = () => {
                     videoElement.current.onloadedmetadata = () => {
                         dispatch(setLength(videoElement.current?.duration));
                     }
+
+                    videoElement.current.addEventListener('timeupdate', onTimeupdate)
                 }
             }
           }
       
           reader.readAsDataURL(event.target.files[0]);
         }
-      }
+    }
+
+    useEffect(() => {
+        if (videoElement?.current?.currentTime && isDragging) {
+            videoElement.current.currentTime = currentLocation * videoElement.current.duration;
+        }
+    }, [currentLocation, isDragging]);
 
 
     return (
