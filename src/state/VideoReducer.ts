@@ -23,7 +23,9 @@ function getBlockIndex(time: number, blocks: timeBlock[]): number {
 export const videoSlice = createSlice({
     name: 'video',
     initialState: {
-        length: 1, 
+        length: 1,
+        pickerLocation: 0,
+        videoLocation: 0,
         currentLocation: 0,
         isDragging: false,
         isPlaying: false,
