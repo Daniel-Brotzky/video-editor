@@ -4,6 +4,7 @@ export interface timeBlock {
     index?: number,
     blockStart: number,
     blockEnd: number,
+    id: number
 }
 
 function getBlockIndex(time: number, blocks: timeBlock[]): number {
@@ -34,7 +35,8 @@ export const videoSlice = createSlice({
             state.blocks.push({
                 index: 0,
                 blockStart: 0,
-                blockEnd: action.payload
+                blockEnd: action.payload,
+                id: 0 + action.payload
             })
         },
         setLocation: (state, action) => {
@@ -53,17 +55,24 @@ export const videoSlice = createSlice({
             const newBlock1: timeBlock = {
                 blockStart: state.blocks[oldIndex].blockStart,
                 blockEnd: time,
+                id: state.blocks[oldIndex].blockStart + time
             };
 
             const newBlock2: timeBlock = {
                 blockStart: time,
                 blockEnd: state.blocks[oldIndex].blockEnd,
+                id: time + state.blocks[oldIndex].blockEnd
             };
 
             state.blocks.splice(oldIndex, 1, newBlock1, newBlock2);
+        },
+        reorderBlock: (state, action) => {
+            const { oldIndex, newIndex } = action.payload;
+
+            state.blocks.splice(newIndex, 0, state.blocks.splice(oldIndex, 1)[0]);
         }
     }
 }) 
 
-export const { initVideo, setLocation, setDragging, setPlaying, splitBlock } = videoSlice.actions;
+export const { initVideo, setLocation, setDragging, setPlaying, splitBlock, reorderBlock } = videoSlice.actions;
 export default videoSlice.reducer;
