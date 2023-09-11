@@ -36,13 +36,14 @@ const Picker: FC<PickerProps> = ({ left }) => {
 const TimelinePicker = () => {
     const [left, setLeft] = useState(0);
     const videoLocation = useSelector((state: RootState) => state.video.currentLocation);
+    const videoLength = useSelector((state: RootState) => state.video.length);
     const isDragging = useSelector((state: RootState) => state.video.isDragging);
     const wrapperRef = useRef<HTMLDivElement>(null);
     const dispatch = useDispatch();
 
     const changeLocation = (deltaX: number) => {
         if (wrapperRef.current) {
-            const newLocation = ((left + deltaX) / wrapperRef.current.getBoundingClientRect().width);
+            const newLocation = ((left + deltaX) / wrapperRef.current.getBoundingClientRect().width) * videoLength;
             
             dispatch(setLocation(newLocation))
         }
@@ -54,11 +55,6 @@ const TimelinePicker = () => {
 
     const handleDragMove = ({ delta }: DragMoveEvent) => {
         changeLocation(delta.x);
-        if (wrapperRef.current) {
-            const newLocation = ((left + delta.x) / wrapperRef.current.getBoundingClientRect().width);
-            
-            dispatch(setLocation(newLocation))
-        }
     }
 
     const handleDragEnd = ({ delta }: DragEndEvent) => {
@@ -69,10 +65,10 @@ const TimelinePicker = () => {
 
     useEffect(() => {
         if (!isDragging && wrapperRef.current && !isNaN(videoLocation)) {
-            const newLeft = Math.min(videoLocation, 1) * wrapperRef.current.getBoundingClientRect().width;
+            const newLeft = Math.min(videoLocation / videoLength, 1) * wrapperRef.current.getBoundingClientRect().width;
             setLeft(newLeft);
         }
-    }, [videoLocation, setLeft, isDragging, wrapperRef]);
+    }, [videoLocation, videoLength, setLeft, isDragging, wrapperRef]);
 
     return (
         <div className="timeline-picker-wrapper" ref={wrapperRef}>

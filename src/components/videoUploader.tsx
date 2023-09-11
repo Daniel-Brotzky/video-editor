@@ -1,6 +1,6 @@
 import { ChangeEvent, useCallback, useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { setLength, setLocation, setPlaying } from "../state/VideoReducer";
+import { initVideo, setLocation, setPlaying } from "../state/VideoReducer";
 import { RootState } from "../state/store";
 import VideoControls from "./VideoControls";
 import "./Video.css"
@@ -26,7 +26,7 @@ const VideoUploader = () => {
 
     const onTimeUpdate = useCallback(() => {
         if (videoElement.current) {
-            dispatch(setLocation(videoElement.current.currentTime / videoElement.current.duration));
+            dispatch(setLocation(videoElement.current.currentTime));
         }  
     }, [dispatch, videoElement])
 
@@ -46,7 +46,7 @@ const VideoUploader = () => {
                     videoElement.current?.load();
 
                     videoElement.current.onloadedmetadata = () => {
-                        dispatch(setLength(videoElement.current?.duration));
+                        dispatch(initVideo(videoElement.current?.duration));
                     }
 
                     videoElement.current.addEventListener('timeupdate', onTimeUpdate);
@@ -61,7 +61,7 @@ const VideoUploader = () => {
 
     useEffect(() => {
         if (videoElement?.current?.currentTime && isDragging) {
-            videoElement.current.currentTime = currentLocation * videoElement.current.duration;
+            videoElement.current.currentTime = currentLocation;
         }
     }, [currentLocation, isDragging]);
 
