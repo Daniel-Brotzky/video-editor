@@ -4,7 +4,7 @@ import {CSS} from '@dnd-kit/utilities';
 import { FC, useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../state/store";
-import { setDragging, setLocation } from "../../state/VideoReducer";
+import { setDragging, setPickerLocation } from "../../state/VideoReducer";
 
 interface PickerProps {
     left: number
@@ -35,7 +35,7 @@ const Picker: FC<PickerProps> = ({ left }) => {
 
 const TimelinePicker = () => {
     const [left, setLeft] = useState(0);
-    const videoLocation = useSelector((state: RootState) => state.video.currentLocation);
+    const pickerLocation = useSelector((state: RootState) => state.video.pickerLocation);
     const videoLength = useSelector((state: RootState) => state.video.length);
     const isDragging = useSelector((state: RootState) => state.video.isDragging);
     const wrapperRef = useRef<HTMLDivElement>(null);
@@ -45,7 +45,7 @@ const TimelinePicker = () => {
         if (wrapperRef.current) {
             const newLocation = ((left + deltaX) / wrapperRef.current.getBoundingClientRect().width) * videoLength;
             
-            dispatch(setLocation(newLocation))
+            dispatch(setPickerLocation(newLocation))
         }
     }
 
@@ -64,11 +64,12 @@ const TimelinePicker = () => {
     }
 
     useEffect(() => {
-        if (!isDragging && wrapperRef.current && !isNaN(videoLocation)) {
-            const newLeft = Math.min(videoLocation / videoLength, 1) * wrapperRef.current.getBoundingClientRect().width;
+        if (!isDragging && wrapperRef.current && !isNaN(pickerLocation)) {
+            console.log(pickerLocation);
+            const newLeft = Math.min(pickerLocation / videoLength, 1) * wrapperRef.current.getBoundingClientRect().width;
             setLeft(newLeft);
         }
-    }, [videoLocation, videoLength, setLeft, isDragging, wrapperRef]);
+    }, [pickerLocation, videoLength, setLeft, isDragging, wrapperRef]);
 
     return (
         <div className="timeline-picker-wrapper" ref={wrapperRef}>

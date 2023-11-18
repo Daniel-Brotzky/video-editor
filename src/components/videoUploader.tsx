@@ -1,6 +1,6 @@
 import { ChangeEvent, useCallback, useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { initVideo, setLocation, setPlaying } from "../state/VideoReducer";
+import { initVideo, setLocation, setPlaying, setVideoLocation } from "../state/VideoReducer";
 import { RootState } from "../state/store";
 import VideoControls from "./VideoControls";
 import "./Video.css"
@@ -8,7 +8,8 @@ import "./Video.css"
 const VideoUploader = () => {
     const videoElement = useRef<HTMLVideoElement>(null);
     const videoSource = useRef<HTMLSourceElement>(null);
-    const currentLocation = useSelector((state: RootState) => state.video.currentLocation);
+    // const currentLocation = useSelector((state: RootState) => state.video.currentLocation);
+    const videoLocation = useSelector((state: RootState) => state.video.videoLocation);
     const isDragging = useSelector((state: RootState) => state.video.isDragging);
     const isPlaying = useSelector((state: RootState) => state.video.isPlaying);
     const dispatch = useDispatch();
@@ -18,6 +19,7 @@ const VideoUploader = () => {
         if (isPlaying && videoElement.current) {
             videoElement.current.play();
         }
+        console.log(videoLocation);
     }, [isPlaying, videoElement])
 
     if (!isPlaying && videoElement.current) {
@@ -26,7 +28,7 @@ const VideoUploader = () => {
 
     const onTimeUpdate = useCallback(() => {
         if (videoElement.current) {
-            dispatch(setLocation(videoElement.current.currentTime));
+            dispatch(setVideoLocation(videoElement.current.currentTime));
         }  
     }, [dispatch, videoElement])
 
@@ -61,9 +63,10 @@ const VideoUploader = () => {
 
     useEffect(() => {
         if (videoElement?.current?.currentTime && isDragging) {
-            videoElement.current.currentTime = currentLocation;
+            videoElement.current.currentTime = videoLocation;
         }
-    }, [currentLocation, isDragging]);
+        console.log(videoLocation);
+    }, [videoLocation, isDragging]);
 
 
     return (
